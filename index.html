@@ -1,0 +1,1729 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ôn tập: Vectơ trong không gian – Toán 12 KNTT</title>
+
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['$','$'], ['\\(','\\)']], displayMath: [['$$','$$']] },
+  svg: { fontCache: 'global' },
+  options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+<style>
+:root{
+  --primary:#4f46e5; --primary-dark:#4338ca; --primary-light:#eef2ff;
+  --cyan:#06b6d4; --violet:#8b5cf6;
+  --green:#10b981; --green-light:#ecfdf5;
+  --red:#ef4444; --red-light:#fef2f2;
+  --amber:#f59e0b; --amber-light:#fffbeb;
+  --bg:#f1f5f9; --card:#ffffff;
+  --text:#0f172a; --muted:#64748b; --border:#e2e8f0;
+  --radius:16px;
+  --shadow:0 1px 3px rgb(0 0 0/.06),0 4px 14px -4px rgb(0 0 0/.08);
+  --shadow-lg:0 20px 40px -12px rgb(79 70 229/.25);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Segoe UI',system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif;
+  background:var(--bg); color:var(--text); line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ============ HERO ============ */
+.hero{
+  position:relative; overflow:hidden;
+  background:linear-gradient(125deg,#4338ca 0%,#6d28d9 45%,#0891b2 100%);
+  color:#fff; padding:52px 20px 62px; text-align:center;
+}
+.hero::before{
+  content:""; position:absolute; inset:0;
+  background-image:
+    radial-gradient(circle at 12% 20%, rgba(255,255,255,.16) 0, transparent 42%),
+    radial-gradient(circle at 88% 75%, rgba(255,255,255,.13) 0, transparent 45%),
+    radial-gradient(circle at 55% 5%, rgba(255,255,255,.08) 0, transparent 35%);
+}
+.hero::after{
+  content:""; position:absolute; inset:0; opacity:.16;
+  background-image:linear-gradient(rgba(255,255,255,.5) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,.5) 1px,transparent 1px);
+  background-size:46px 46px;
+  mask-image:radial-gradient(ellipse at center,black,transparent 78%);
+}
+.hero-inner{position:relative;z-index:2;max-width:900px;margin:0 auto}
+.badge{
+  display:inline-block; background:rgba(255,255,255,.16); backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,.3); padding:6px 18px; border-radius:999px;
+  font-size:.82rem; font-weight:600; letter-spacing:.4px; margin-bottom:18px;
+}
+.hero h1{
+  font-size:clamp(1.8rem,5vw,2.85rem); font-weight:800; letter-spacing:-.8px;
+  margin-bottom:12px; text-shadow:0 3px 22px rgba(0,0,0,.22);
+}
+.hero p{font-size:clamp(.95rem,2vw,1.08rem); opacity:.94; max-width:660px; margin:0 auto}
+.teacher-chip{
+  display:inline-flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:center;
+  margin-top:22px; background:rgba(255,255,255,.14); backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,.26); padding:9px 20px; border-radius:999px;
+  font-size:.86rem; font-weight:500;
+}
+.teacher-chip span{opacity:.7}
+.dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.6)}
+
+/* ============ TABS ============ */
+.tabbar{
+  position:sticky; top:0; z-index:100;
+  background:rgba(255,255,255,.88); backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+  box-shadow:0 2px 14px -6px rgb(0 0 0/.1);
+}
+.tabs{
+  max-width:1080px; margin:0 auto; padding:10px 16px;
+  display:flex; gap:8px; overflow-x:auto; scrollbar-width:none;
+}
+.tabs::-webkit-scrollbar{display:none}
+.tab{
+  flex:0 0 auto; border:none; background:transparent; cursor:pointer;
+  padding:10px 22px; border-radius:999px; font-size:.94rem; font-weight:600;
+  color:var(--muted); font-family:inherit; transition:.22s; white-space:nowrap;
+  display:flex; align-items:center; gap:7px;
+}
+.tab:hover{background:var(--primary-light); color:var(--primary)}
+.tab.active{
+  background:linear-gradient(120deg,var(--primary),var(--violet));
+  color:#fff; box-shadow:0 6px 16px -6px rgb(79 70 229/.7);
+}
+
+/* ============ LAYOUT ============ */
+main{max-width:1080px; margin:0 auto; padding:32px 16px 80px}
+.panel{display:none; animation:fade .38s ease}
+.panel.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+.sec-title{
+  font-size:1.28rem; font-weight:800; letter-spacing:-.4px;
+  margin:0 0 6px; display:flex; align-items:center; gap:10px;
+}
+.sec-sub{color:var(--muted); font-size:.9rem; margin-bottom:22px}
+
+/* ============ THEORY ============ */
+.acc{
+  background:var(--card); border:1px solid var(--border); border-radius:var(--radius);
+  margin-bottom:14px; overflow:hidden; box-shadow:var(--shadow); transition:.25s;
+}
+.acc:hover{box-shadow:0 8px 26px -10px rgb(79 70 229/.3); border-color:#c7d2fe}
+.acc-head{
+  display:flex; align-items:center; gap:14px; padding:17px 20px; cursor:pointer;
+  user-select:none; transition:.2s;
+}
+.acc-head:hover{background:#fafbff}
+.acc-num{
+  flex:0 0 38px; height:38px; border-radius:11px; display:grid; place-items:center;
+  font-weight:800; font-size:.95rem; color:#fff;
+  background:linear-gradient(135deg,var(--primary),var(--violet));
+  box-shadow:0 4px 12px -4px rgb(79 70 229/.6);
+}
+.acc-title{flex:1; font-weight:700; font-size:1.02rem}
+.acc-arrow{
+  color:var(--muted); font-size:1.05rem; transition:transform .3s;
+}
+.acc.open .acc-arrow{transform:rotate(180deg)}
+.acc-body{max-height:0; overflow:hidden; transition:max-height .42s cubic-bezier(.4,0,.2,1)}
+.acc.open .acc-body{max-height:2600px}
+.acc-inner{padding:4px 22px 22px; border-top:1px solid var(--border); margin-top:2px; padding-top:18px}
+.acc-inner p{margin-bottom:11px}
+.acc-inner ul{margin:8px 0 14px 20px}
+.acc-inner li{margin-bottom:7px}
+.formula{
+  background:linear-gradient(135deg,#f5f3ff,#ecfeff);
+  border-left:4px solid var(--primary); border-radius:10px;
+  padding:13px 18px; margin:11px 0; overflow-x:auto;
+}
+.hl{background:#fef3c7; padding:1px 6px; border-radius:5px; font-weight:600; color:#92400e}
+.note{
+  background:var(--amber-light); border-left:4px solid var(--amber);
+  border-radius:10px; padding:12px 16px; margin:12px 0; font-size:.94rem;
+}
+.note b{color:#b45309}
+
+/* ============ MODE CARDS ============ */
+.modes{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:18px; margin-bottom:26px}
+.mode-card{
+  background:var(--card); border:1.5px solid var(--border); border-radius:18px;
+  padding:24px 22px; cursor:pointer; transition:.28s; position:relative; overflow:hidden;
+  box-shadow:var(--shadow);
+}
+.mode-card::before{
+  content:""; position:absolute; top:0; left:0; right:0; height:4px;
+  background:linear-gradient(90deg,var(--primary),var(--cyan));
+  transform:scaleX(0); transform-origin:left; transition:transform .35s;
+}
+.mode-card:hover{transform:translateY(-6px); box-shadow:var(--shadow-lg); border-color:#c7d2fe}
+.mode-card:hover::before{transform:scaleX(1)}
+.mode-icon{
+  width:52px; height:52px; border-radius:14px; display:grid; place-items:center;
+  font-size:1.5rem; margin-bottom:14px;
+  background:linear-gradient(135deg,var(--primary-light),#e0f2fe);
+}
+.mode-card h3{font-size:1.06rem; font-weight:800; margin-bottom:7px; letter-spacing:-.3px}
+.mode-card p{font-size:.87rem; color:var(--muted); margin-bottom:14px; min-height:42px}
+.mode-meta{display:flex; gap:8px; flex-wrap:wrap; font-size:.75rem; font-weight:600}
+.pill{padding:4px 11px; border-radius:999px; background:var(--primary-light); color:var(--primary-dark)}
+.pill.alt{background:var(--amber-light); color:#b45309}
+.pill.grn{background:var(--green-light); color:#047857}
+
+/* ============ QUIZ ============ */
+.quizbar{
+  position:sticky; top:57px; z-index:90;
+  background:rgba(255,255,255,.94); backdrop-filter:blur(12px);
+  border:1px solid var(--border); border-radius:14px;
+  padding:12px 18px; margin-bottom:20px;
+  display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+  box-shadow:0 6px 20px -10px rgb(0 0 0/.2);
+}
+.quizbar .qtitle{font-weight:800; font-size:.98rem; flex:1; min-width:150px}
+.timer{
+  display:flex; align-items:center; gap:7px; font-weight:800; font-size:1rem;
+  font-variant-numeric:tabular-nums; padding:6px 14px; border-radius:10px;
+  background:var(--primary-light); color:var(--primary-dark); transition:.3s;
+}
+.timer.warn{background:var(--amber-light); color:#b45309; animation:pulse 1.4s infinite}
+.timer.danger{background:var(--red-light); color:#b91c1c; animation:pulse .8s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+
+.prog-wrap{flex:0 0 130px; min-width:110px}
+.prog-txt{font-size:.72rem; color:var(--muted); font-weight:700; margin-bottom:4px; text-align:right}
+.prog-bar{height:7px; background:#e2e8f0; border-radius:99px; overflow:hidden}
+.prog-fill{
+  height:100%; width:0%; border-radius:99px; transition:width .35s ease;
+  background:linear-gradient(90deg,var(--primary),var(--cyan));
+}
+
+.section-head{
+  margin:30px 0 16px; padding:14px 20px; border-radius:12px;
+  background:linear-gradient(115deg,#312e81,#5b21b6); color:#fff;
+  font-weight:800; font-size:1rem; letter-spacing:-.2px;
+  display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  box-shadow:0 8px 22px -12px rgb(49 46 129/.9);
+}
+.section-head .sdesc{font-weight:500; font-size:.8rem; opacity:.85; margin-left:auto}
+
+.q-card{
+  background:var(--card); border:1.5px solid var(--border); border-radius:var(--radius);
+  padding:20px 22px; margin-bottom:15px; box-shadow:var(--shadow);
+  transition:.25s; scroll-margin-top:130px;
+}
+.q-card:hover{border-color:#c7d2fe}
+.q-card.correct{border-color:#a7f3d0; background:linear-gradient(180deg,#f0fdf9,#fff)}
+.q-card.wrong{border-color:#fecaca; background:linear-gradient(180deg,#fef2f2,#fff)}
+.q-card.partial{border-color:#fde68a; background:linear-gradient(180deg,#fffbeb,#fff)}
+
+.q-head{display:flex; align-items:center; gap:10px; margin-bottom:12px; flex-wrap:wrap}
+.q-num{
+  font-weight:800; font-size:.82rem; color:#fff; padding:4px 12px; border-radius:8px;
+  background:linear-gradient(135deg,var(--primary),var(--violet));
+}
+.level{font-size:.7rem; font-weight:800; padding:3px 10px; border-radius:6px; letter-spacing:.3px}
+.lv-NB{background:#dbeafe; color:#1d4ed8}
+.lv-TH{background:#dcfce7; color:#15803d}
+.lv-VD{background:#fed7aa; color:#c2410c}
+.lv-VDC{background:#fecdd3; color:#be123c}
+.q-res{margin-left:auto; font-size:.78rem; font-weight:800}
+.q-res.ok{color:var(--green)} .q-res.no{color:var(--red)} .q-res.pa{color:var(--amber)}
+
+.q-text{font-size:.99rem; margin-bottom:14px; line-height:1.75}
+
+.options{display:grid; gap:9px}
+.opt{
+  display:flex; align-items:flex-start; gap:12px; text-align:left; width:100%;
+  padding:12px 16px; border:1.5px solid var(--border); border-radius:11px;
+  background:#fff; cursor:pointer; font-family:inherit; font-size:.94rem;
+  color:var(--text); transition:.18s; line-height:1.6;
+}
+.opt:hover:not(.locked){border-color:var(--primary); background:var(--primary-light); transform:translateX(4px)}
+.opt .lab{
+  flex:0 0 26px; height:26px; border-radius:7px; display:grid; place-items:center;
+  background:#f1f5f9; font-weight:800; font-size:.8rem; color:var(--muted); transition:.18s;
+}
+.opt.selected{border-color:var(--primary); background:var(--primary-light)}
+.opt.selected .lab{background:var(--primary); color:#fff}
+.opt.locked{cursor:default}
+.opt.correct-ans{border-color:var(--green); background:var(--green-light)}
+.opt.correct-ans .lab{background:var(--green); color:#fff}
+.opt.wrong-ans{border-color:var(--red); background:var(--red-light)}
+.opt.wrong-ans .lab{background:var(--red); color:#fff}
+
+/* True/False */
+.tf-list{display:grid; gap:9px}
+.tf-row{
+  display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+  padding:11px 15px; border:1.5px solid var(--border); border-radius:11px; background:#fff;
+}
+.tf-row .tf-text{flex:1; min-width:200px; font-size:.93rem}
+.tf-btns{display:flex; gap:7px}
+.tf-btn{
+  padding:7px 17px; border-radius:8px; border:1.5px solid var(--border); background:#fff;
+  font-family:inherit; font-weight:700; font-size:.82rem; cursor:pointer;
+  color:var(--muted); transition:.18s; white-space:nowrap;
+}
+.tf-btn:hover:not(.locked){border-color:var(--primary); color:var(--primary)}
+.tf-btn.on-true{background:var(--green); border-color:var(--green); color:#fff}
+.tf-btn.on-false{background:var(--red); border-color:var(--red); color:#fff}
+.tf-btn.locked{cursor:default}
+.tf-btn.rev-correct{background:var(--green); border-color:var(--green); color:#fff; box-shadow:0 0 0 3px #a7f3d0}
+.tf-btn.rev-wrong{background:var(--red); border-color:var(--red); color:#fff; box-shadow:0 0 0 3px #fecaca}
+
+/* Short answer */
+.short-wrap{display:flex; align-items:center; gap:12px; flex-wrap:wrap}
+.short-input{
+  flex:1; min-width:170px; max-width:280px; padding:12px 16px;
+  border:1.5px solid var(--border); border-radius:11px; font-family:inherit;
+  font-size:1rem; font-weight:600; transition:.2s; background:#fff; color:var(--text);
+}
+.short-input:focus{outline:none; border-color:var(--primary); box-shadow:0 0 0 4px rgb(79 70 229/.13)}
+.short-input.ok{border-color:var(--green); background:var(--green-light); color:#047857}
+.short-input.no{border-color:var(--red); background:var(--red-light); color:#b91c1c}
+.short-input:disabled{opacity:.85}
+
+.explain{
+  margin-top:14px; padding:12px 16px; border-radius:11px; font-size:.89rem;
+  background:#f8fafc; border-left:4px solid var(--cyan); color:#334155;
+}
+.explain b{color:var(--primary-dark)}
+
+/* Buttons */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:9px;
+  padding:13px 30px; border-radius:12px; border:none; cursor:pointer;
+  font-family:inherit; font-weight:700; font-size:.95rem; transition:.22s;
+}
+.btn-primary{
+  background:linear-gradient(120deg,var(--primary),var(--violet)); color:#fff;
+  box-shadow:0 8px 20px -8px rgb(79 70 229/.85);
+}
+.btn-primary:hover{transform:translateY(-2px); box-shadow:0 14px 28px -10px rgb(79 70 229/.9)}
+.btn-ghost{background:#fff; color:var(--primary); border:1.5px solid var(--primary)}
+.btn-ghost:hover{background:var(--primary-light)}
+.btn-gray{background:#fff; color:var(--muted); border:1.5px solid var(--border)}
+.btn-gray:hover{background:#f8fafc; color:var(--text)}
+.btn-danger{background:#fff; color:var(--red); border:1.5px solid #fecaca}
+.btn-danger:hover{background:var(--red-light)}
+.btn:disabled{opacity:.5; cursor:not-allowed; transform:none!important}
+.actions{display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin:30px 0 10px}
+
+/* Results */
+.result-hero{
+  background:linear-gradient(130deg,#312e81,#6d28d9 55%,#0891b2);
+  border-radius:22px; padding:36px 26px; text-align:center; color:#fff;
+  box-shadow:var(--shadow-lg); margin-bottom:24px; position:relative; overflow:hidden;
+}
+.result-hero::after{
+  content:""; position:absolute; inset:0; opacity:.13;
+  background-image:radial-gradient(circle,#fff 1.4px,transparent 1.4px);
+  background-size:26px 26px;
+}
+.result-hero > *{position:relative; z-index:2}
+.score-ring{
+  width:158px; height:158px; margin:0 auto 18px; border-radius:50%;
+  display:grid; place-items:center; position:relative;
+  background:conic-gradient(#fff var(--pct,0%), rgba(255,255,255,.22) 0);
+}
+.score-ring::before{
+  content:""; position:absolute; inset:11px; border-radius:50%;
+  background:linear-gradient(135deg,#4338ca,#6d28d9);
+}
+.score-ring .inner{position:relative; z-index:2; text-align:center}
+.score-val{font-size:2.5rem; font-weight:900; line-height:1; letter-spacing:-2px}
+.score-max{font-size:.86rem; opacity:.8; margin-top:5px; font-weight:600}
+.result-hero h2{font-size:1.35rem; font-weight:800; margin-bottom:6px}
+.result-hero .rsub{opacity:.9; font-size:.92rem}
+
+.stat-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:14px; margin-bottom:26px}
+.stat-box{
+  background:var(--card); border:1px solid var(--border); border-radius:14px;
+  padding:18px; text-align:center; box-shadow:var(--shadow);
+}
+.stat-box .v{font-size:1.55rem; font-weight:900; letter-spacing:-1px; line-height:1.2}
+.stat-box .k{font-size:.76rem; color:var(--muted); font-weight:700; margin-top:3px; text-transform:uppercase; letter-spacing:.4px}
+.v.g{color:var(--green)} .v.r{color:var(--red)} .v.a{color:var(--amber)} .v.b{color:var(--primary)}
+
+/* Stats table */
+.table-wrap{overflow-x:auto; border-radius:14px; border:1px solid var(--border); background:#fff; box-shadow:var(--shadow)}
+table{width:100%; border-collapse:collapse; font-size:.88rem; min-width:560px}
+th{
+  background:#f8fafc; padding:13px 16px; text-align:left; font-weight:800;
+  font-size:.76rem; text-transform:uppercase; letter-spacing:.5px; color:var(--muted);
+  border-bottom:1px solid var(--border); white-space:nowrap;
+}
+td{padding:13px 16px; border-bottom:1px solid #f1f5f9; vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:#fafbff}
+.badge-mode{
+  display:inline-block; padding:3px 10px; border-radius:6px; font-size:.74rem; font-weight:800;
+}
+.bm-theory{background:#dbeafe;color:#1d4ed8}
+.bm-practice{background:#ede9fe;color:#6d28d9}
+.bm-exam{background:#ffedd5;color:#c2410c}
+.bar-mini{height:6px; background:#e2e8f0; border-radius:99px; overflow:hidden; min-width:64px}
+.bar-mini > div{height:100%; border-radius:99px; background:linear-gradient(90deg,var(--primary),var(--cyan))}
+
+.empty{
+  text-align:center; padding:60px 20px; color:var(--muted);
+  background:#fff; border:1.5px dashed var(--border); border-radius:18px;
+}
+.empty .big{font-size:2.6rem; margin-bottom:10px}
+
+/* Toast */
+#toast{
+  position:fixed; bottom:28px; left:50%; transform:translate(-50%,120px);
+  background:#0f172a; color:#fff; padding:13px 26px; border-radius:12px;
+  font-weight:600; font-size:.9rem; z-index:999; transition:.35s;
+  box-shadow:0 12px 32px -8px rgb(0 0 0/.5); max-width:88vw; text-align:center;
+}
+#toast.show{transform:translate(-50%,0)}
+
+footer{
+  text-align:center; padding:34px 20px; color:var(--muted); font-size:.84rem;
+  border-top:1px solid var(--border); background:#fff;
+}
+footer b{color:var(--primary-dark)}
+
+@media(max-width:640px){
+  .hero{padding:38px 16px 46px}
+  .quizbar{gap:10px; padding:10px 13px; top:54px}
+  .quizbar .qtitle{font-size:.85rem; width:100%; flex-basis:100%}
+  .prog-wrap{flex:1}
+  .q-card{padding:16px 15px}
+  .opt{padding:11px 13px; font-size:.9rem}
+  .tf-row{padding:10px 12px}
+  .tf-btn{padding:7px 13px; font-size:.78rem}
+  .acc-inner{padding:14px 16px 18px}
+  .btn{padding:12px 22px; font-size:.9rem}
+  .section-head{font-size:.9rem; padding:12px 15px}
+  .section-head .sdesc{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= HERO ================= -->
+<header class="hero">
+  <div class="hero-inner">
+    <div class="badge">TOÁN 12 · KẾT NỐI TRI THỨC VỚI CUỘC SỐNG</div>
+    <h1>Vectơ trong không gian</h1>
+    <p>Hệ thống ôn tập tương tác: nhắc lại lý thuyết trọng tâm – luyện tập theo dạng – đề tổng hợp theo cấu trúc đề thi của Bộ GD&ĐT.</p>
+    <div class="teacher-chip">
+      GV: <b>Nguyễn Hữu Trung</b> <span class="dot"></span> THPT Trần Phú <span class="dot"></span> 0964 848 989
+    </div>
+  </div>
+</header>
+
+<!-- ================= TABS ================= -->
+<div class="tabbar">
+  <nav class="tabs">
+    <button class="tab active" data-tab="theory">📘 Lý thuyết</button>
+    <button class="tab" data-tab="practice">✏️ Luyện tập</button>
+    <button class="tab" data-tab="stats">📊 Thống kê</button>
+  </nav>
+</div>
+
+<main>
+
+<!-- ================= THEORY ================= -->
+<section id="panel-theory" class="panel active">
+  <h2 class="sec-title">📘 Nhắc lại lý thuyết trọng tâm</h2>
+  <p class="sec-sub">Nhấn vào từng mục để mở/đóng nội dung. Học kĩ phần này trước khi luyện tập nhé!</p>
+
+  <div class="acc open">
+    <div class="acc-head"><div class="acc-num">1</div><div class="acc-title">Vectơ trong không gian – Khái niệm cơ bản</div><div class="acc-arrow">▾</div></div>
+    <div class="acc-body"><div class="acc-inner">
+      <p><b>Định nghĩa:</b> Vectơ trong không gian là một đoạn thẳng có hướng. Kí hiệu $\vec{AB}$ (điểm đầu $A$, điểm cuối $B$) hoặc $\vec{a},\vec{b},\vec{x},\dots$</p>
+      <ul>
+        <li><b>Giá của vectơ</b> là đường thẳng đi qua điểm đầu và điểm cuối của vectơ đó.</li>
+        <li><b>Độ dài</b> của vectơ $\vec{AB}$ là độ dài đoạn thẳng $AB$, kí hiệu $|\vec{AB}| = AB$.</li>
+        <li><b>Vectơ – không</b> $\vec{0}$ là vectơ có điểm đầu và điểm cuối trùng nhau; $|\vec{0}|=0$.</li>
+      </ul>
+      <div class="formula">
+        <b>Hai vectơ cùng phương</b> ⇔ giá của chúng song song hoặc trùng nhau.<br>
+        <b>Hai vectơ cùng hướng</b> là hai vectơ cùng phương và có cùng hướng.<br>
+        <b>Hai vectơ bằng nhau</b> ⇔ chúng <span class="hl">cùng hướng</span> và <span class="hl">cùng độ dài</span>.
+      </div>
+      <div class="note"><b>Lưu ý:</b> Ba điểm $A, B, C$ thẳng hàng ⇔ $\vec{AB}$ và $\vec{AC}$ cùng phương ⇔ tồn tại $k$ sao cho $\vec{AB} = k\vec{AC}$.</div>
+    </div></div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head"><div class="acc-num">2</div><div class="acc-title">Phép cộng và phép trừ vectơ</div><div class="acc-arrow">▾</div></div>
+    <div class="acc-body"><div class="acc-inner">
+      <div class="formula">
+        <b>Quy tắc ba điểm:</b> $\vec{AB} + \vec{BC} = \vec{AC}$<br>
+        <b>Quy tắc hình bình hành:</b> $ABCD$ là hình bình hành ⇒ $\vec{AB} + \vec{AD} = \vec{AC}$<br>
+        <b>Quy tắc hình hộp:</b> $ABCD.A'B'C'D'$ là hình hộp ⇒ $\vec{AB} + \vec{AD} + \vec{AA'} = \vec{AC'}$<br>
+        <b>Quy tắc hiệu:</b> $\vec{AB} - \vec{AC} = \vec{CB}$ (hay $\vec{OB} - \vec{OA} = \vec{AB}$)
+      </div>
+      <p><b>Tính chất</b> (với mọi vectơ $\vec{a},\vec{b},\vec{c}$):</p>
+      <ul>
+        <li>Giao hoán: $\vec{a}+\vec{b}=\vec{b}+\vec{a}$</li>
+        <li>Kết hợp: $(\vec{a}+\vec{b})+\vec{c}=\vec{a}+(\vec{b}+\vec{c})$</li>
+        <li>Cộng với vectơ – không: $\vec{a}+\vec{0}=\vec{a}$</li>
+      </ul>
+      <div class="note"><b>Mẹo nhớ quy tắc hình hộp:</b> Ba cạnh xuất phát từ một đỉnh cộng lại bằng đường chéo xuất phát từ đỉnh đó.</div>
+    </div></div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head"><div class="acc-num">3</div><div class="acc-title">Phép nhân vectơ với một số</div><div class="acc-arrow">▾</div></div>
+    <div class="acc-body"><div class="acc-inner">
+      <p>Tích của vectơ $\vec{a}$ với số thực $k$ là vectơ $k\vec{a}$:</p>
+      <ul>
+        <li>Cùng hướng với $\vec{a}$ nếu $k>0$; ngược hướng với $\vec{a}$ nếu $k<0$.</li>
+        <li>Có độ dài bằng $|k|\cdot|\vec{a}|$.</li>
+      </ul>
+      <div class="formula">
+        $\vec{a}$ và $\vec{b}$ ($\vec{a}\neq\vec{0}$) cùng phương ⇔ $\exists k\in\mathbb{R}: \vec{b}=k\vec{a}$
+      </div>
+      <p><b>Trung điểm – Trọng tâm:</b></p>
+      <div class="formula">
+        $I$ là trung điểm $AB$ ⇔ $\vec{IA}+\vec{IB}=\vec{0}$ ⇔ $\vec{OI}=\dfrac{1}{2}\left(\vec{OA}+\vec{OB}\right)$<br><br>
+        $G$ là trọng tâm $\triangle ABC$ ⇔ $\vec{GA}+\vec{GB}+\vec{GC}=\vec{0}$ ⇔ $\vec{OG}=\dfrac{1}{3}\left(\vec{OA}+\vec{OB}+\vec{OC}\right)$<br><br>
+        $G$ là trọng tâm tứ diện $ABCD$ ⇔ $\vec{GA}+\vec{GB}+\vec{GC}+\vec{GD}=\vec{0}$ ⇔ $\vec{OG}=\dfrac{1}{4}\left(\vec{OA}+\vec{OB}+\vec{OC}+\vec{OD}\right)$
+      </div>
+    </div></div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head"><div class="acc-num">4</div><div class="acc-title">Tích vô hướng của hai vectơ</div><div class="acc-arrow">▾</div></div>
+    <div class="acc-body"><div class="acc-inner">
+      <div class="formula">
+        $\vec{a}\cdot\vec{b} = |\vec{a}|\cdot|\vec{b}|\cdot\cos\left(\vec{a},\vec{b}\right)$
+      </div>
+      <p>Hệ quả quan trọng:</p>
+      <ul>
+        <li>$|\vec{a}|^2 = \vec{a}\cdot\vec{a} = \vec{a}^2$</li>
+        <li>$\vec{a}\perp\vec{b} \Leftrightarrow \vec{a}\cdot\vec{b}=0$</li>
+        <li>$\cos\left(\vec{a},\vec{b}\right)=\dfrac{\vec{a}\cdot\vec{b}}{|\vec{a}|\cdot|\vec{b}|}$</li>
+        <li>$\vec{a}\cdot\vec{b}>0 \Rightarrow$ góc giữa hai vectơ là góc <b>nhọn</b>; $<0 \Rightarrow$ góc <b>tù</b>.</li>
+      </ul>
+      <div class="note"><b>Chú ý:</b> Tích vô hướng là một <b>số thực</b>, không phải vectơ. Không có phép chia vectơ.</div>
+    </div></div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head"><div class="acc-num">5</div><div class="acc-title">Hệ trục toạ độ Oxyz</div><div class="acc-arrow">▾</div></div>
+    <div class="acc-body"><div class="acc-inner">
+      <p>Hệ trục toạ độ $Oxyz$ gồm ba trục $Ox, Oy, Oz$ đôi một vuông góc, với các vectơ đơn vị $\vec{i},\vec{j},\vec{k}$ lần lượt trên $Ox, Oy, Oz$; $|\vec{i}|=|\vec{j}|=|\vec{k}|=1$.</p>
+      <div class="formula">
+        $\vec{a}=(x;y;z) \Leftrightarrow \vec{a}=x\vec{i}+y\vec{j}+z\vec{k}$<br><br>
+        $M(x;y;z) \Leftrightarrow \vec{OM}=x\vec{i}+y\vec{j}+z\vec{k}$
+      </div>
+      <p>Toạ độ các điểm đặc biệt:</p>
+      <ul>
+        <li>$M\in Ox \Rightarrow M(x;0;0)$; $M\in Oy \Rightarrow M(0;y;0)$; $M\in Oz \Rightarrow M(0;0;z)$</li>
+        <li>$M\in (Oxy) \Rightarrow M(x;y;0)$; $M\in (Oyz) \Rightarrow M(0;y;z)$; $M\in (Oxz) \Rightarrow M(x;0;z)$</li>
+      </ul>
+    </div></div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head"><div class="acc-num">6</div><div class="acc-title">Biểu thức toạ độ của các phép toán vectơ</div><div class="acc-arrow">▾</div></div>
+    <div class="acc-body"><div class="acc-inner">
+      <p>Cho $\vec{a}=(x_1;y_1;z_1)$, $\vec{b}=(x_2;y_2;z_2)$ và $A(x_A;y_A;z_A)$, $B(x_B;y_B;z_B)$:</p>
+      <div class="formula">
+        $\vec{a}\pm\vec{b}=(x_1\pm x_2;\,y_1\pm y_2;\,z_1\pm z_2)$<br>
+        $k\vec{a}=(kx_1;\,ky_1;\,kz_1)$<br>
+        $\vec{a}\cdot\vec{b}=x_1x_2+y_1y_2+z_1z_2$<br>
+        $|\vec{a}|=\sqrt{x_1^2+y_1^2+z_1^2}$<br>
+        $\cos(\vec{a},\vec{b})=\dfrac{x_1x_2+y_1y_2+z_1z_2}{\sqrt{x_1^2+y_1^2+z_1^2}\cdot\sqrt{x_2^2+y_2^2+z_2^2}}$<br><br>
+        $\vec{AB}=(x_B-x_A;\,y_B-y_A;\,z_B-z_A)$<br>
+        $AB=|\vec{AB}|=\sqrt{(x_B-x_A)^2+(y_B-y_A)^2+(z_B-z_A)^2}$
+      </div>
+      <div class="formula">
+        <b>Trung điểm $I$ của $AB$:</b> $I\left(\dfrac{x_A+x_B}{2};\dfrac{y_A+y_B}{2};\dfrac{z_A+z_B}{2}\right)$<br><br>
+        <b>Trọng tâm $G$ của $\triangle ABC$:</b> $G\left(\dfrac{x_A+x_B+x_C}{3};\dfrac{y_A+y_B+y_C}{3};\dfrac{z_A+z_B+z_C}{3}\right)$
+      </div>
+    </div></div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head"><div class="acc-num">7</div><div class="acc-title">Điều kiện đồng phẳng của ba vectơ</div><div class="acc-arrow">▾</div></div>
+    <div class="acc-body"><div class="acc-inner">
+      <div class="formula">
+        Ba vectơ $\vec{a},\vec{b},\vec{c}$ <b>đồng phẳng</b> ⇔ tồn tại $m,n\in\mathbb{R}$ sao cho $\vec{c}=m\vec{a}+n\vec{b}$<br>
+        <span style="font-size:.9em">(với điều kiện $\vec{a},\vec{b}$ không cùng phương)</span>
+      </div>
+      <div class="note">
+        <b>Ứng dụng:</b> Bốn điểm $A,B,C,D$ đồng phẳng ⇔ $\vec{AB},\vec{AC},\vec{AD}$ đồng phẳng.<br>
+        <b>Cách giải thường dùng:</b> Giả sử $\vec{c}=m\vec{a}+n\vec{b}$, lập hệ phương trình theo toạ độ rồi giải tìm $m,n$.
+      </div>
+    </div></div>
+  </div>
+
+  <div class="acc">
+    <div class="acc-head"><div class="acc-num">8</div><div class="acc-title">Các dạng toán thường gặp</div><div class="acc-arrow">▾</div></div>
+    <div class="acc-body"><div class="acc-inner">
+      <ul>
+        <li><b>Dạng 1:</b> Chứng minh đẳng thức vectơ – dùng quy tắc ba điểm, hình bình hành, hình hộp.</li>
+        <li><b>Dạng 2:</b> Chứng minh ba điểm thẳng hàng – chứng minh hai vectơ cùng phương.</li>
+        <li><b>Dạng 3:</b> Chứng minh bốn điểm đồng phẳng – chứng minh ba vectơ đồng phẳng.</li>
+        <li><b>Dạng 4:</b> Tìm toạ độ điểm, vectơ thoả mãn điều kiện cho trước.</li>
+        <li><b>Dạng 5:</b> Tính tích vô hướng, độ dài, góc, chứng minh vuông góc.</li>
+        <li><b>Dạng 6:</b> Tìm $m$ để hai vectơ vuông góc / cùng phương / đồng phẳng.</li>
+      </ul>
+      <div class="note"><b>Chiến lược làm bài:</b> Với bài toán hình học không gian, hãy <b>chọn hệ trục toạ độ</b> phù hợp (thường gắn với các cạnh vuông góc) rồi chuyển bài toán về toạ độ.</div>
+    </div></div>
+  </div>
+</section>
+
+<!-- ================= PRACTICE ================= -->
+<section id="panel-practice" class="panel">
+  <div id="modeSelect">
+    <h2 class="sec-title">✏️ Chọn hình thức luyện tập</h2>
+    <p class="sec-sub">Bài tập được phân mức từ Nhận biết → Thông hiểu → Vận dụng → Vận dụng cao. Hãy làm lần lượt để nắm chắc kiến thức!</p>
+
+    <div class="modes">
+      <div class="mode-card" data-mode="theoryQuiz">
+        <div class="mode-icon">🧠</div>
+        <h3>1. Củng cố lý thuyết</h3>
+        <p>10 câu trắc nghiệm 4 đáp án, kiểm tra nhanh các khái niệm và quy tắc cơ bản.</p>
+        <div class="mode-meta">
+          <span class="pill">10 câu</span>
+          <span class="pill alt">15 phút</span>
+          <span class="pill grn">10 điểm</span>
+        </div>
+      </div>
+
+      <div class="mode-card" data-mode="practice">
+        <div class="mode-icon">🎯</div>
+        <h3>2. Luyện tập theo dạng</h3>
+        <p>Đủ 3 dạng thức: trắc nghiệm 4 đáp án, trắc nghiệm Đúng/Sai và trả lời ngắn.</p>
+        <div class="mode-meta">
+          <span class="pill">13 câu</span>
+          <span class="pill alt">45 phút</span>
+          <span class="pill grn">16 điểm</span>
+        </div>
+      </div>
+
+      <div class="mode-card" data-mode="exam">
+        <div class="mode-icon">🏆</div>
+        <h3>3. Đề tổng hợp</h3>
+        <p>Mô phỏng cấu trúc đề thi tốt nghiệp THPT: 3 phần, đủ mức độ, có tính điểm theo quy chế.</p>
+        <div class="mode-meta">
+          <span class="pill">22 câu</span>
+          <span class="pill alt">90 phút</span>
+          <span class="pill grn">10 điểm</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="note" style="margin-top:6px">
+      <b>Hướng dẫn:</b> Sau khi chọn hình thức, các em làm bài trực tiếp trên màn hình. Hết thời gian hệ thống sẽ <b>tự động thu bài</b>. Kết quả được lưu lại để theo dõi tiến bộ ở tab <b>Thống kê</b>.
+    </div>
+  </div>
+
+  <div id="quizArea" style="display:none"></div>
+</section>
+
+<!-- ================= STATS ================= -->
+<section id="panel-stats" class="panel">
+  <h2 class="sec-title">📊 Thống kê kết quả học tập</h2>
+  <p class="sec-sub">Dữ liệu được lưu trên chính thiết bị của em. Hãy làm bài đều đặn để thấy sự tiến bộ!</p>
+  <div id="statsArea"></div>
+</section>
+
+</main>
+
+<footer>
+  <b>Vectơ trong không gian</b> – Hệ thống ôn tập tương tác Toán 12<br>
+  Biên soạn: GV <b>Nguyễn Hữu Trung</b> · THPT Trần Phú · ĐT: 0964 848 989
+</footer>
+
+<div id="toast"></div>
+
+<script>
+/* =====================================================================
+   1. NGÂN HÀNG CÂU HỎI
+   ===================================================================== */
+
+const LEVELS = { NB:'Nhận biết', TH:'Thông hiểu', VD:'Vận dụng', VDC:'Vận dụng cao' };
+
+/* ---------- PHẦN 1: CỦNG CỐ LÝ THUYẾT ---------- */
+const THEORY_QUIZ = [
+{
+  type:'mcq', level:'NB',
+  q:`Cho hình hộp $ABCD.A'B'C'D'$. Khẳng định nào sau đây đúng?`,
+  options:[
+    `$\\vec{AB}+\\vec{AD}+\\vec{AA'}=\\vec{AC'}$`,
+    `$\\vec{AB}+\\vec{AD}+\\vec{AA'}=\\vec{AC}$`,
+    `$\\vec{AB}+\\vec{AD}+\\vec{AA'}=\\vec{AD'}$`,
+    `$\\vec{AB}+\\vec{AD}+\\vec{AA'}=\\vec{AB'}$`
+  ],
+  ans:0,
+  explain:`Theo <b>quy tắc hình hộp</b>: ba cạnh xuất phát từ một đỉnh cộng lại bằng đường chéo xuất phát từ đỉnh đó.`
+},
+{
+  type:'mcq', level:'NB',
+  q:`Hai vectơ $\\vec{a}$ và $\\vec{b}$ (đều khác $\\vec{0}$) được gọi là <b>bằng nhau</b> nếu:`,
+  options:[
+    `Chúng cùng phương và cùng độ dài.`,
+    `Chúng cùng hướng và cùng độ dài.`,
+    `Chúng cùng hướng.`,
+    `Chúng có cùng độ dài.`
+  ],
+  ans:1,
+  explain:`Hai vectơ bằng nhau khi và chỉ khi chúng <b>cùng hướng</b> và <b>cùng độ dài</b>.`
+},
+{
+  type:'mcq', level:'NB',
+  q:`Trong không gian $Oxyz$, cho $\\vec{a}=(1;2;-1)$ và $\\vec{b}=(3;-1;2)$. Toạ độ của $\\vec{a}+\\vec{b}$ là:`,
+  options:[`$(4;1;1)$`, `$(4;3;1)$`, `$(2;-3;3)$`, `$(-2;3;-3)$`],
+  ans:0,
+  explain:`$\\vec{a}+\\vec{b}=(1+3;\\,2+(-1);\\,-1+2)=(4;1;1)$.`
+},
+{
+  type:'mcq', level:'TH',
+  q:`Cho ba vectơ $\\vec{a},\\vec{b},\\vec{c}$ trong đó $\\vec{a},\\vec{b}$ <b>không cùng phương</b>. Ba vectơ này <b>đồng phẳng</b> khi và chỉ khi:`,
+  options:[
+    `Tồn tại cặp số thực $(m;n)$ sao cho $\\vec{c}=m\\vec{a}+n\\vec{b}$.`,
+    `Tồn tại số thực $k$ sao cho $\\vec{c}=k\\vec{a}$.`,
+    `$\\vec{a}\\cdot\\vec{b}\\cdot\\vec{c}=0$.`,
+    `$\\vec{a}+\\vec{b}+\\vec{c}=\\vec{0}$.`
+  ],
+  ans:0,
+  explain:`Điều kiện đồng phẳng: $\\vec{c}=m\\vec{a}+n\\vec{b}$ với $m,n\\in\\mathbb{R}$ (khi $\\vec{a},\\vec{b}$ không cùng phương).`
+},
+{
+  type:'mcq', level:'NB',
+  q:`Trong không gian $Oxyz$, cho $A(1;0;2)$, $B(3;2;-1)$. Toạ độ của $\\vec{AB}$ là:`,
+  options:[`$(2;2;-3)$`, `$(-2;-2;3)$`, `$(4;2;1)$`, `$(2;-2;-3)$`],
+  ans:0,
+  explain:`$\\vec{AB}=(x_B-x_A;y_B-y_A;z_B-z_A)=(3-1;2-0;-1-2)=(2;2;-3)$.`
+},
+{
+  type:'mcq', level:'NB',
+  q:`Độ dài của vectơ $\\vec{a}=(2;-1;2)$ bằng:`,
+  options:[`$3$`, `$5$`, `$9$`, `$\\sqrt{5}$`],
+  ans:0,
+  explain:`$|\\vec{a}|=\\sqrt{2^2+(-1)^2+2^2}=\\sqrt{9}=3$.`
+},
+{
+  type:'mcq', level:'TH',
+  q:`Trong không gian $Oxyz$, cho $\\vec{a}=(1;2;3)$, $\\vec{b}=(2;-1;0)$. Tích vô hướng $\\vec{a}\\cdot\\vec{b}$ bằng:`,
+  options:[`$0$`, `$4$`, `$5$`, `$-4$`],
+  ans:0,
+  explain:`$\\vec{a}\\cdot\\vec{b}=1\\cdot2+2\\cdot(-1)+3\\cdot0=2-2+0=0$.`
+},
+{
+  type:'mcq', level:'NB',
+  q:`Hai vectơ $\\vec{a}$ và $\\vec{b}$ (khác $\\vec{0}$) vuông góc với nhau khi và chỉ khi:`,
+  options:[
+    `$\\vec{a}\\cdot\\vec{b}=0$`,
+    `$|\\vec{a}|=|\\vec{b}|$`,
+    `$\\vec{a}+\\vec{b}=\\vec{0}$`,
+    `$\\vec{a}$ và $\\vec{b}$ cùng phương.`
+  ],
+  ans:0,
+  explain:`$\\vec{a}\\perp\\vec{b}\\Leftrightarrow \\left(\\vec{a},\\vec{b}\\right)=90^{\\circ}\\Leftrightarrow \\vec{a}\\cdot\\vec{b}=0$.`
+},
+{
+  type:'mcq', level:'NB',
+  q:`Cho hình bình hành $ABCD$. Khẳng định nào sau đây đúng?`,
+  options:[
+    `$\\vec{AB}+\\vec{AD}=\\vec{AC}$`,
+    `$\\vec{AB}+\\vec{AC}=\\vec{AD}$`,
+    `$\\vec{AB}-\\vec{AD}=\\vec{AC}$`,
+    `$\\vec{AB}+\\vec{BC}=\\vec{BD}$`
+  ],
+  ans:0,
+  explain:`Quy tắc hình bình hành: $\\vec{AB}+\\vec{AD}=\\vec{AC}$.`
+},
+{
+  type:'mcq', level:'TH',
+  q:`$I$ là trung điểm của đoạn thẳng $AB$. Với điểm $O$ bất kì, khẳng định nào sau đây đúng?`,
+  options:[
+    `$\\vec{OI}=\\dfrac{1}{2}\\left(\\vec{OA}+\\vec{OB}\\right)$`,
+    `$\\vec{OI}=\\vec{OA}+\\vec{OB}$`,
+    `$\\vec{OI}=\\dfrac{1}{2}\\left(\\vec{OA}-\\vec{OB}\\right)$`,
+    `$\\vec{OI}=\\vec{OA}-\\vec{OB}$`
+  ],
+  ans:0,
+  explain:`$I$ là trung điểm $AB$ nên $\\vec{OI}=\\dfrac{1}{2}\\left(\\vec{OA}+\\vec{OB}\\right)$ với mọi điểm $O$.`
+}
+];
+
+/* ---------- PHẦN 2: LUYỆN TẬP THEO DẠNG ---------- */
+const PRACTICE = {
+  title:'Luyện tập theo dạng',
+  timeLimit:45*60,
+  sections:[
+    {
+      name:'DẠNG 1 · Trắc nghiệm nhiều phương án lựa chọn',
+      desc:'Mỗi câu 1 điểm',
+      points:1,
+      questions:[
+      {
+        type:'mcq', level:'NB',
+        q:`Cho $\\vec{a}=(-1;2;3)$, $\\vec{b}=(2;1;-1)$. Toạ độ của $\\vec{a}-\\vec{b}$ là:`,
+        options:[`$(1;3;2)$`, `$(-3;1;4)$`, `$(3;-1;-4)$`, `$(-3;-1;4)$`],
+        ans:1,
+        explain:`$\\vec{a}-\\vec{b}=(-1-2;\\,2-1;\\,3-(-1))=(-3;1;4)$.`
+      },
+      {
+        type:'mcq', level:'NB',
+        q:`Cho $A(1;-2;3)$, $B(-1;0;1)$. Toạ độ trung điểm $I$ của đoạn thẳng $AB$ là:`,
+        options:[`$(0;-1;2)$`, `$(2;-2;2)$`, `$(0;1;-2)$`, `$(-1;-1;2)$`],
+        ans:0,
+        explain:`$I\\left(\\dfrac{1+(-1)}{2};\\dfrac{-2+0}{2};\\dfrac{3+1}{2}\\right)=(0;-1;2)$.`
+      },
+      {
+        type:'mcq', level:'TH',
+        q:`Cho $\\vec{a}=(1;m;2)$, $\\vec{b}=(2;1;-1)$. Giá trị của $m$ để $\\vec{a}\\perp\\vec{b}$ là:`,
+        options:[`$m=0$`, `$m=1$`, `$m=-1$`, `$m=2$`],
+        ans:0,
+        explain:`$\\vec{a}\\perp\\vec{b}\\Leftrightarrow \\vec{a}\\cdot\\vec{b}=0\\Leftrightarrow 1\\cdot2+m\\cdot1+2\\cdot(-1)=0\\Leftrightarrow m=0$.`
+      },
+      {
+        type:'mcq', level:'TH',
+        q:`Trong không gian $Oxyz$, cho $A(2;-1;3)$, $B(0;1;1)$. Độ dài đoạn thẳng $AB$ bằng:`,
+        options:[`$2\\sqrt{3}$`, `$2\\sqrt{2}$`, `$4$`, `$\\sqrt{10}$`],
+        ans:0,
+        explain:`$\\vec{AB}=(-2;2;-2)\\Rightarrow AB=\\sqrt{4+4+4}=\\sqrt{12}=2\\sqrt{3}$.`
+      },
+      {
+        type:'mcq', level:'VD',
+        q:`Cho tứ diện $ABCD$, gọi $G$ là trọng tâm tam giác $BCD$. Khẳng định nào sau đây đúng?`,
+        options:[
+          `$\\vec{AG}=\\dfrac{1}{3}\\left(\\vec{AB}+\\vec{AC}+\\vec{AD}\\right)$`,
+          `$\\vec{AG}=\\vec{AB}+\\vec{AC}+\\vec{AD}$`,
+          `$\\vec{AG}=\\dfrac{1}{2}\\left(\\vec{AB}+\\vec{AC}+\\vec{AD}\\right)$`,
+          `$\\vec{AG}=\\dfrac{1}{4}\\left(\\vec{AB}+\\vec{AC}+\\vec{AD}\\right)$`
+        ],
+        ans:0,
+        explain:`Vì $G$ là trọng tâm $\\triangle BCD$ nên $\\vec{AB}+\\vec{AC}+\\vec{AD}=3\\vec{AG}$, suy ra $\\vec{AG}=\\dfrac{1}{3}\\left(\\vec{AB}+\\vec{AC}+\\vec{AD}\\right)$.`
+      }
+      ]
+    },
+    {
+      name:'DẠNG 2 · Trắc nghiệm Đúng / Sai',
+      desc:'Mỗi câu 2 điểm (đúng 1 ý: 0,5đ · 2 ý: 1đ · 3 ý: 1,5đ · 4 ý: 2đ)',
+      points:2,
+      tfPartial:true,
+      questions:[
+      {
+        type:'tf', level:'TH',
+        q:`Trong không gian $Oxyz$, cho ba điểm $A(1;0;0)$, $B(0;2;0)$, $C(0;0;3)$. Xét tính đúng/sai của các khẳng định sau:`,
+        statements:[
+          {t:`$\\vec{AB}=(-1;2;0)$`, a:true},
+          {t:`$\\vec{AC}=(-1;0;3)$`, a:true},
+          {t:`$\\vec{AB}\\cdot\\vec{AC}=1$`, a:true},
+          {t:`Tam giác $ABC$ vuông tại $A$.`, a:false}
+        ],
+        explain:`$\\vec{AB}=(-1;2;0)$; $\\vec{AC}=(-1;0;3)$; $\\vec{AB}\\cdot\\vec{AC}=(-1)(-1)+2\\cdot0+0\\cdot3=1\\neq0$ nên tam giác $ABC$ <b>không</b> vuông tại $A$.`
+      },
+      {
+        type:'tf', level:'TH',
+        q:`Cho hình hộp $ABCD.A'B'C'D'$. Xét tính đúng/sai của các khẳng định sau:`,
+        statements:[
+          {t:`$\\vec{AB}+\\vec{AD}+\\vec{AA'}=\\vec{AC'}$`, a:true},
+          {t:`$\\vec{AB}=\\vec{C'D'}$`, a:false},
+          {t:`$\\vec{AC}=\\vec{A'C'}$`, a:true},
+          {t:`Bốn điểm $A,C,C',A'$ đồng phẳng.`, a:true}
+        ],
+        explain:`$\\vec{AB}$ và $\\vec{C'D'}$ là hai vectơ <b>ngược hướng</b> nên không bằng nhau. Bốn điểm $A,C,C',A'$ tạo thành hình bình hành $ACC'A'$ nên đồng phẳng.`
+      },
+      {
+        type:'tf', level:'VD',
+        q:`Trong không gian $Oxyz$, cho $\\vec{u}=(1;2;2)$ và $\\vec{v}=(2;-2;1)$. Xét tính đúng/sai của các khẳng định sau:`,
+        statements:[
+          {t:`$|\\vec{u}|=3$`, a:true},
+          {t:`$\\vec{u}\\cdot\\vec{v}=0$`, a:true},
+          {t:`$\\vec{u}\\perp\\vec{v}$`, a:true},
+          {t:`$\\vec{u}$ và $\\vec{v}$ cùng phương.`, a:false}
+        ],
+        explain:`$|\\vec{u}|=\\sqrt{1+4+4}=3$; $\\vec{u}\\cdot\\vec{v}=2-4+2=0$ nên $\\vec{u}\\perp\\vec{v}$. Hai vectơ vuông góc nên không cùng phương.`
+      }
+      ]
+    },
+    {
+      name:'DẠNG 3 · Trắc nghiệm trả lời ngắn',
+      desc:'Mỗi câu 1 điểm · Nhập kết quả là một số',
+      points:1,
+      questions:[
+      {
+        type:'short', level:'NB',
+        q:`Cho $\\vec{a}=(2;-1;3)$, $\\vec{b}=(1;2;-1)$. Tính $\\vec{a}\\cdot\\vec{b}$.`,
+        ans:-3,
+        explain:`$\\vec{a}\\cdot\\vec{b}=2\\cdot1+(-1)\\cdot2+3\\cdot(-1)=2-2-3=-3$.`
+      },
+      {
+        type:'short', level:'NB',
+        q:`Cho $A(1;2;3)$, $B(4;6;3)$. Tính độ dài đoạn thẳng $AB$.`,
+        ans:5,
+        explain:`$\\vec{AB}=(3;4;0)\\Rightarrow AB=\\sqrt{9+16}=5$.`
+      },
+      {
+        type:'short', level:'TH',
+        q:`Tìm $m$ để hai vectơ $\\vec{a}=(m;2;1)$ và $\\vec{b}=(1;-1;3)$ vuông góc với nhau.`,
+        ans:-1,
+        explain:`$\\vec{a}\\cdot\\vec{b}=m-2+3=m+1=0\\Leftrightarrow m=-1$.`
+      },
+      {
+        type:'short', level:'TH',
+        q:`Cho $\\vec{a}=(1;2;2)$. Tính $|2\\vec{a}|$.`,
+        ans:6,
+        explain:`$|\\vec{a}|=\\sqrt{1+4+4}=3\\Rightarrow |2\\vec{a}|=2\\cdot3=6$.`
+      },
+      {
+        type:'short', level:'VD',
+        q:`Cho hình hộp $ABCD.A'B'C'D'$ có $A(0;0;0)$, $B(2;0;0)$, $D(0;2;0)$, $A'(0;0;1)$. Tính độ dài đường chéo $AC'$.`,
+        ans:3,
+        explain:`$C'=(2;2;1)\\Rightarrow AC'=\\sqrt{4+4+1}=3$.`
+      }
+      ]
+    }
+  ]
+};
+
+/* ---------- PHẦN 3: ĐỀ TỔNG HỢP ---------- */
+const EXAM = {
+  title:'Đề tổng hợp – Vectơ trong không gian',
+  timeLimit:90*60,
+  sections:[
+    {
+      name:'PHẦN I · Câu trắc nghiệm nhiều phương án lựa chọn',
+      desc:'12 câu · 0,25 điểm/câu · 3,0 điểm',
+      points:0.25,
+      questions:[
+      {
+        type:'mcq', level:'NB',
+        q:`Cho $\\vec{a}=(1;-2;3)$. Toạ độ của $-2\\vec{a}$ là:`,
+        options:[`$(-2;4;-6)$`, `$(2;-4;6)$`, `$(-2;-4;-6)$`, `$(2;4;6)$`],
+        ans:0,
+        explain:`$-2\\vec{a}=(-2\\cdot1;-2\\cdot(-2);-2\\cdot3)=(-2;4;-6)$.`
+      },
+      {
+        type:'mcq', level:'NB',
+        q:`Trong không gian $Oxyz$, cho $A(1;1;1)$, $B(2;3;4)$. Toạ độ của $\\vec{AB}$ là:`,
+        options:[`$(1;2;3)$`, `$(3;4;5)$`, `$(1;1;1)$`, `$(-1;-2;-3)$`],
+        ans:0,
+        explain:`$\\vec{AB}=(2-1;3-1;4-1)=(1;2;3)$.`
+      },
+      {
+        type:'mcq', level:'NB',
+        q:`Cho $\\vec{a}=(1;2;-1)$, $\\vec{b}=(-1;1;2)$. Toạ độ của $\\vec{a}+\\vec{b}$ là:`,
+        options:[`$(0;3;1)$`, `$(2;1;-3)$`, `$(0;1;3)$`, `$(-1;2;-2)$`],
+        ans:0,
+        explain:`$\\vec{a}+\\vec{b}=(1-1;2+1;-1+2)=(0;3;1)$.`
+      },
+      {
+        type:'mcq', level:'NB',
+        q:`Trong không gian $Oxyz$, độ dài của vectơ $\\vec{a}=(1;2;2)$ bằng:`,
+        options:[`$3$`, `$5$`, `$9$`, `$1$`],
+        ans:0,
+        explain:`$|\\vec{a}|=\\sqrt{1+4+4}=3$.`
+      },
+      {
+        type:'mcq', level:'TH',
+        q:`Cho $\\vec{a}=(2;-1;3)$, $\\vec{b}=(1;m;2)$. Giá trị của $m$ để $\\vec{a}\\perp\\vec{b}$ là:`,
+        options:[`$m=8$`, `$m=-8$`, `$m=4$`, `$m=-4$`],
+        ans:0,
+        explain:`$\\vec{a}\\cdot\\vec{b}=2-m+6=8-m=0\\Leftrightarrow m=8$.`
+      },
+      {
+        type:'mcq', level:'TH',
+        q:`Cho $A(1;0;-1)$, $B(2;1;0)$, $C(0;2;1)$. Toạ độ trọng tâm $G$ của tam giác $ABC$ là:`,
+        options:[`$(1;1;0)$`, `$(3;3;0)$`, `$(1;1;1)$`, `$\\left(\\dfrac{1}{3};1;\\dfrac{1}{3}\\right)$`],
+        ans:0,
+        explain:`$G\\left(\\dfrac{1+2+0}{3};\\dfrac{0+1+2}{3};\\dfrac{-1+0+1}{3}\\right)=(1;1;0)$.`
+      },
+      {
+        type:'mcq', level:'TH',
+        q:`Cho tứ diện $ABCD$. Gọi $M,N$ lần lượt là trung điểm của $AB$ và $CD$. Khẳng định nào sau đây đúng?`,
+        options:[
+          `$\\vec{AC}+\\vec{BD}=2\\vec{MN}$`,
+          `$\\vec{AC}+\\vec{BD}=\\vec{MN}$`,
+          `$\\vec{AC}+\\vec{BD}=3\\vec{MN}$`,
+          `$\\vec{AC}+\\vec{BD}=\\vec{0}$`
+        ],
+        ans:0,
+        explain:`Cộng hai đẳng thức $\\vec{MN}=\\vec{MA}+\\vec{AC}+\\vec{CN}$ và $\\vec{MN}=\\vec{MB}+\\vec{BD}+\\vec{DN}$ ta được $2\\vec{MN}=\\vec{AC}+\\vec{BD}$.`
+      },
+      {
+        type:'mcq', level:'TH',
+        q:`Cho $\\vec{a}=(1;2;2)$, $\\vec{b}=(2;-2;1)$. Góc giữa hai vectơ $\\vec{a}$ và $\\vec{b}$ bằng:`,
+        options:[`$90^{\\circ}$`, `$60^{\\circ}$`, `$45^{\\circ}$`, `$30^{\\circ}$`],
+        ans:0,
+        explain:`$\\vec{a}\\cdot\\vec{b}=2-4+2=0\\Rightarrow \\left(\\vec{a},\\vec{b}\\right)=90^{\\circ}$.`
+      },
+      {
+        type:'mcq', level:'VD',
+        q:`Cho hình lập phương $ABCD.A'B'C'D'$ có cạnh bằng $1$. Tích vô hướng $\\vec{AB}\\cdot\\vec{AC'}$ bằng:`,
+        options:[`$1$`, `$0$`, `$\\sqrt{3}$`, `$\\sqrt{2}$`],
+        ans:0,
+        explain:`Chọn hệ trục: $A(0;0;0)$, $B(1;0;0)$, $C'(1;1;1)$. Khi đó $\\vec{AB}=(1;0;0)$, $\\vec{AC'}=(1;1;1)$ nên $\\vec{AB}\\cdot\\vec{AC'}=1$.`
+      },
+      {
+        type:'mcq', level:'VD',
+        q:`Trong không gian $Oxyz$, cho $A(1;2;3)$, $B(3;0;-1)$, $C(-1;2;1)$. Toạ độ điểm $D$ sao cho $ABCD$ là hình bình hành là:`,
+        options:[`$(-3;4;5)$`, `$(3;-4;-5)$`, `$(5;0;-3)$`, `$(-3;-4;5)$`],
+        ans:0,
+        explain:`$ABCD$ là hình bình hành $\\Leftrightarrow \\vec{AD}=\\vec{BC}\\Leftrightarrow D=A+C-B=(1-1-3;\\,2+2-0;\\,3+1-(-1))=(-3;4;5)$.`
+      },
+      {
+        type:'mcq', level:'VD',
+        q:`Trong không gian $Oxyz$, cho $A(2;0;1)$, $B(0;2;3)$. Điểm $M$ thuộc trục $Oy$ sao cho $MA=MB$ có toạ độ là:`,
+        options:[`$(0;2;0)$`, `$(0;1;0)$`, `$(0;3;0)$`, `$(0;0;0)$`],
+        ans:0,
+        explain:`$M\\in Oy\\Rightarrow M(0;y;0)$. $MA^2=y^2+5$, $MB^2=(y-2)^2+9=y^2-4y+13$. Cho bằng nhau: $5=-4y+13\\Leftrightarrow y=2$. Vậy $M(0;2;0)$.`
+      },
+      {
+        type:'mcq', level:'VDC',
+        q:`Trong không gian $Oxyz$, cho $\\vec{a}=(1;1;0)$, $\\vec{b}=(0;1;1)$, $\\vec{c}=(1;0;m)$. Giá trị của $m$ để ba vectơ $\\vec{a},\\vec{b},\\vec{c}$ đồng phẳng là:`,
+        options:[`$m=-1$`, `$m=1$`, `$m=0$`, `$m=2$`],
+        ans:0,
+        explain:`Giả sử $\\vec{c}=x\\vec{a}+y\\vec{b}$. Từ $x=1$ và $y=m$ (theo toạ độ thứ nhất và thứ ba), thay vào toạ độ thứ hai: $x+y=0\\Rightarrow 1+m=0\\Rightarrow m=-1$.`
+      }
+      ]
+    },
+    {
+      name:'PHẦN II · Câu trắc nghiệm đúng sai',
+      desc:'4 câu · 1,0 điểm/câu (đúng 1 ý: 0,1đ · 2 ý: 0,25đ · 3 ý: 0,5đ · 4 ý: 1,0đ)',
+      points:1,
+      tfPartial:true,
+      questions:[
+      {
+        type:'tf', level:'TH',
+        q:`Trong không gian $Oxyz$, cho $\\vec{a}=(2;-1;3)$, $\\vec{b}=(1;2;-2)$. Xét tính đúng/sai của các khẳng định sau:`,
+        statements:[
+          {t:`$\\vec{a}+\\vec{b}=(3;1;1)$`, a:true},
+          {t:`$|\\vec{a}|=14$`, a:false},
+          {t:`$\\vec{a}\\cdot\\vec{b}=-6$`, a:true},
+          {t:`Góc giữa $\\vec{a}$ và $\\vec{b}$ là góc tù.`, a:true}
+        ],
+        explain:`$|\\vec{a}|=\\sqrt{4+1+9}=\\sqrt{14}$ (không phải $14$). $\\vec{a}\\cdot\\vec{b}=2-2-6=-6<0$ nên góc giữa hai vectơ là góc tù.`
+      },
+      {
+        type:'tf', level:'TH',
+        q:`Cho hình hộp $ABCD.A'B'C'D'$ có tâm $O$. Xét tính đúng/sai của các khẳng định sau:`,
+        statements:[
+          {t:`$\\vec{AB}+\\vec{AD}+\\vec{AA'}=\\vec{AC'}$`, a:true},
+          {t:`$\\vec{AB}+\\vec{BC}+\\vec{CC'}=\\vec{AC'}$`, a:true},
+          {t:`$O$ là trung điểm của $AC'$.`, a:true},
+          {t:`$\\vec{OA}+\\vec{OB}+\\vec{OC}+\\vec{OD}=\\vec{0}$`, a:false}
+        ],
+        explain:`$O$ là tâm hình hộp nên là trung điểm của $AC'$, $BD'$, $CA'$, $DB'$. Tuy nhiên $\\vec{OA}+\\vec{OB}+\\vec{OC}+\\vec{OD}\\neq\\vec{0}$ (tổng này bằng $2\\vec{OO_{ABCD}'}$... nói cách khác $O$ không phải tâm của hình bình hành $ABCD$).`
+      },
+      {
+        type:'tf', level:'TH',
+        q:`Trong không gian $Oxyz$, cho $A(1;2;3)$, $B(3;4;5)$, $C(1;0;1)$. Xét tính đúng/sai của các khẳng định sau:`,
+        statements:[
+          {t:`$\\vec{AB}=(2;2;2)$`, a:true},
+          {t:`Trung điểm $I$ của $AB$ có toạ độ $(2;3;4)$.`, a:true},
+          {t:`Ba điểm $A,B,C$ thẳng hàng.`, a:false},
+          {t:`Tam giác $ABC$ vuông tại $A$.`, a:false}
+        ],
+        explain:`$\\vec{AC}=(0;-2;-2)$ không cùng phương với $\\vec{AB}=(2;2;2)$ nên $A,B,C$ không thẳng hàng. $\\vec{AB}\\cdot\\vec{AC}=0-4-4=-8\\neq0$ nên tam giác không vuông tại $A$.`
+      },
+      {
+        type:'tf', level:'VD',
+        q:`Cho tứ diện $ABCD$ có $G$ là trọng tâm. Xét tính đúng/sai của các khẳng định sau:`,
+        statements:[
+          {t:`$\\vec{GA}+\\vec{GB}+\\vec{GC}+\\vec{GD}=\\vec{0}$`, a:true},
+          {t:`Với mọi điểm $O$: $\\vec{OG}=\\dfrac{1}{4}\\left(\\vec{OA}+\\vec{OB}+\\vec{OC}+\\vec{OD}\\right)$`, a:true},
+          {t:`$G$ là trọng tâm tam giác $BCD$.`, a:false},
+          {t:`$\\vec{AB}+\\vec{AC}+\\vec{AD}=3\\vec{AG}$`, a:true}
+        ],
+        explain:`$G$ là trọng tâm <b>tứ diện</b> $ABCD$, không phải trọng tâm tam giác $BCD$.`
+      }
+      ]
+    },
+    {
+      name:'PHẦN III · Câu trắc nghiệm trả lời ngắn',
+      desc:'6 câu · 0,5 điểm/câu · 3,0 điểm',
+      points:0.5,
+      questions:[
+      {
+        type:'short', level:'NB',
+        q:`Cho $\\vec{a}=(2;-3;1)$, $\\vec{b}=(-1;2;4)$. Tính $\\vec{a}\\cdot\\vec{b}$.`,
+        ans:-4,
+        explain:`$\\vec{a}\\cdot\\vec{b}=-2-6+4=-4$.`
+      },
+      {
+        type:'short', level:'NB',
+        q:`Cho $A(1;2;-1)$, $B(4;2;3)$. Tính độ dài đoạn thẳng $AB$.`,
+        ans:5,
+        explain:`$\\vec{AB}=(3;0;4)\\Rightarrow AB=\\sqrt{9+16}=5$.`
+      },
+      {
+        type:'short', level:'TH',
+        q:`Tìm $m$ để hai vectơ $\\vec{a}=(2;m;1)$ và $\\vec{b}=(1;1;-2)$ vuông góc với nhau.`,
+        ans:0,
+        explain:`$\\vec{a}\\cdot\\vec{b}=2+m-2=m=0\\Leftrightarrow m=0$.`
+      },
+      {
+        type:'short', level:'TH',
+        q:`Cho $\\vec{u}=(1;2;-2)$. Tính $|3\\vec{u}|$.`,
+        ans:9,
+        explain:`$|\\vec{u}|=\\sqrt{1+4+4}=3\\Rightarrow |3\\vec{u}|=3\\cdot3=9$.`
+      },
+      {
+        type:'short', level:'VD',
+        q:`Cho hình hộp $ABCD.A'B'C'D'$ có $A(0;0;0)$, $B(2;0;0)$, $D(0;2;0)$, $A'(0;0;1)$. Tính độ dài đường chéo $AC'$.`,
+        ans:3,
+        explain:`$C'=(2;2;1)\\Rightarrow AC'=\\sqrt{4+4+1}=3$.`
+      },
+      {
+        type:'short', level:'VD',
+        q:`Trong không gian $Oxyz$, cho hình bình hành $ABCD$ với $A(1;0;1)$, $B(2;1;0)$, $C(-1;2;1)$. Tìm hoành độ của điểm $D$.`,
+        ans:-2,
+        explain:`$\\vec{AD}=\\vec{BC}\\Rightarrow D=A+C-B=(1-1-2;\\,0+2-1;\\,1+1-0)=(-2;1;2)$. Vậy hoành độ của $D$ bằng $-2$.`
+      }
+      ]
+    }
+  ]
+};
+
+/* =====================================================================
+   2. TIỆN ÍCH & LƯU TRỮ
+   ===================================================================== */
+const STORAGE_KEY = 'vtnk_math12_stats_v1';
+
+function getStats(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return { attempts:[] };
+    const obj = JSON.parse(raw);
+    return obj && Array.isArray(obj.attempts) ? obj : { attempts:[] };
+  }catch(e){ return { attempts:[] }; }
+}
+function saveAttempt(a){
+  const s = getStats();
+  s.attempts.unshift(a);
+  if(s.attempts.length > 200) s.attempts.length = 200;
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }catch(e){}
+}
+function clearStats(){
+  try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+}
+
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._id);
+  t._id = setTimeout(()=>t.classList.remove('show'), 2600);
+}
+function typeset(el){
+  if(window.MathJax && MathJax.typesetPromise){
+    MathJax.typesetPromise([el]).catch(()=>{});
+  } else {
+    setTimeout(()=>typeset(el), 400);
+  }
+}
+function fmtTime(sec){
+  sec = Math.max(0, Math.floor(sec));
+  const h = Math.floor(sec/3600), m = Math.floor((sec%3600)/60), s = sec%60;
+  const p = n => String(n).padStart(2,'0');
+  return h>0 ? `${p(h)}:${p(m)}:${p(s)}` : `${p(m)}:${p(s)}`;
+}
+function fmtDate(ts){
+  const d = new Date(ts);
+  const p = n => String(n).padStart(2,'0');
+  return `${p(d.getDate())}/${p(d.getMonth()+1)}/${d.getFullYear()} ${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+function esc(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* =====================================================================
+   3. ĐIỀU HƯỚNG TAB
+   ===================================================================== */
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('panel-' + tab.dataset.tab).classList.add('active');
+    if(tab.dataset.tab === 'stats') renderStats();
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+});
+function switchTab(name){
+  const t = document.querySelector(`.tab[data-tab="${name}"]`);
+  if(t) t.click();
+}
+
+/* Accordion lý thuyết */
+document.querySelectorAll('.acc-head').forEach(h=>{
+  h.addEventListener('click', ()=> h.parentElement.classList.toggle('open'));
+});
+
+/* =====================================================================
+   4. ENGINE LÀM BÀI
+   ===================================================================== */
+let activeQuiz = null;
+
+function buildQuiz(mode){
+  if(mode === 'theoryQuiz'){
+    return {
+      id:'theoryQuiz',
+      title:'Củng cố lý thuyết',
+      timeLimit:15*60,
+      sections:[{ name:'CÂU HỎI CỦNG CỐ LÝ THUYẾT', desc:'10 câu · 1 điểm/câu · 10 điểm',
+                  points:1, questions:THEORY_QUIZ }]
+    };
+  }
+  if(mode === 'practice'){ return Object.assign({id:'practice'}, PRACTICE); }
+  if(mode === 'exam'){ return Object.assign({id:'exam'}, EXAM); }
+}
+
+function flatten(quiz){
+  const list = [];
+  quiz.sections.forEach((sec, si)=>{
+    sec.questions.forEach((q, qi)=>{
+      list.push({
+        ref:q, key:`q_${si}_${qi}`, sectionIndex:si,
+        sectionName:sec.name, points:sec.points, tfPartial:!!sec.tfPartial
+      });
+    });
+  });
+  return list;
+}
+
+/* ---------- Bắt đầu ---------- */
+document.querySelectorAll('.mode-card').forEach(card=>{
+  card.addEventListener('click', ()=> startQuiz(card.dataset.mode));
+});
+
+function startQuiz(mode){
+  const def = buildQuiz(mode);
+  activeQuiz = {
+    def,
+    flat: flatten(def),
+    answers:{},
+    startTime: Date.now(),
+    timeLeft: def.timeLimit,
+    timerId:null,
+    submitted:false
+  };
+  document.getElementById('modeSelect').style.display = 'none';
+  const area = document.getElementById('quizArea');
+  area.style.display = 'block';
+  renderQuizScreen();
+  startTimer();
+  window.scrollTo({top: 200, behavior:'smooth'});
+}
+
+function startTimer(){
+  clearInterval(activeQuiz.timerId);
+  const tick = ()=>{
+    if(!activeQuiz || activeQuiz.submitted) return;
+    activeQuiz.timeLeft--;
+    updateTimerUI();
+    if(activeQuiz.timeLeft <= 0){
+      clearInterval(activeQuiz.timerId);
+      toast('⏰ Hết thời gian làm bài! Hệ thống tự động thu bài.');
+      submitQuiz(true);
+    }
+  };
+  activeQuiz.timerId = setInterval(tick, 1000);
+  updateTimerUI();
+}
+
+function updateTimerUI(){
+  const el = document.getElementById('timerBox');
+  if(!el || !activeQuiz) return;
+  el.textContent = '⏱ ' + fmtTime(activeQuiz.timeLeft);
+  el.classList.remove('warn','danger');
+  const pct = activeQuiz.timeLeft / activeQuiz.def.timeLimit;
+  if(pct <= 0.1) el.classList.add('danger');
+  else if(pct <= 0.25) el.classList.add('warn');
+}
+
+/* ---------- Render màn hình làm bài ---------- */
+function renderQuizScreen(){
+  const area = document.getElementById('quizArea');
+  const def = activeQuiz.def;
+
+  let html = `
+    <div class="quizbar">
+      <div class="qtitle">${esc(def.title)}</div>
+      <div class="timer" id="timerBox">⏱ 00:00</div>
+      <div class="prog-wrap">
+        <div class="prog-txt" id="progTxt">0/0 câu</div>
+        <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
+      </div>
+    </div>
+    <div id="questionsWrap">`;
+
+  let globalIdx = 0;
+  def.sections.forEach((sec, si)=>{
+    html += `<div class="section-head">${esc(sec.name)}<span class="sdesc">${esc(sec.desc||'')}</span></div>`;
+    sec.questions.forEach((q, qi)=>{
+      globalIdx++;
+      const key = `q_${si}_${qi}`;
+      html += renderQuestion(q, globalIdx, key, false);
+    });
+  });
+
+  html += `</div>
+    <div class="actions">
+      <button class="btn btn-gray" id="btnCancel">← Thoát</button>
+      <button class="btn btn-primary" id="btnSubmit">✓ Nộp bài</button>
+    </div>`;
+
+  area.innerHTML = html;
+  bindQuizEvents();
+  updateProgress();
+  updateTimerUI();
+  typeset(area);
+}
+
+/* ---------- Render 1 câu hỏi ---------- */
+function renderQuestion(q, num, key, reviewMode){
+  const lvCls = 'lv-' + q.level;
+  const lvName = LEVELS[q.level] || q.level;
+  let body = '';
+
+  if(q.type === 'mcq'){
+    body = `<div class="options">` + q.options.map((opt, i)=>{
+      let cls = 'opt';
+      if(reviewMode){
+        cls += ' locked';
+        if(i === q.ans) cls += ' correct-ans';
+      }
+      return `<button class="${cls}" data-i="${i}" data-key="${key}">
+        <span class="lab">${'ABCD'[i]}</span><span>${opt}</span></button>`;
+    }).join('') + `</div>`;
+  }
+  else if(q.type === 'tf'){
+    body = `<div class="tf-list">` + q.statements.map((s, i)=>{
+      return `<div class="tf-row" data-si="${i}">
+        <div class="tf-text"><b>${'abcd'[i]})</b> ${s.t}</div>
+        <div class="tf-btns">
+          <button class="tf-btn ${reviewMode?'locked':''}" data-key="${key}" data-si="${i}" data-v="true">Đúng</button>
+          <button class="tf-btn ${reviewMode?'locked':''}" data-key="${key}" data-si="${i}" data-v="false">Sai</button>
+        </div>
+      </div>`;
+    }).join('') + `</div>`;
+  }
+  else if(q.type === 'short'){
+    body = `<div class="short-wrap">
+      <input class="short-input" type="text" inputmode="decimal" placeholder="Nhập kết quả..." data-key="${key}" ${reviewMode?'disabled':''}>
+      <span style="font-size:.82rem;color:var(--muted)">(nhập số, dùng dấu chấm hoặc phẩy thập phân)</span>
+    </div>`;
+  }
+
+  return `<div class="q-card" data-key="${key}" id="card-${key}">
+    <div class="q-head">
+      <span class="q-num">Câu ${num}</span>
+      <span class="level ${lvCls}">${lvName}</span>
+    </div>
+    <div class="q-text">${q.q}</div>
+    ${body}
+  </div>`;
+}
+
+/* ---------- Gắn sự kiện ---------- */
+function bindQuizEvents(){
+  const area = document.getElementById('quizArea');
+  if(!area || area._bound) return;
+  area._bound = true;
+
+  area.addEventListener('click', e=>{
+    if(!activeQuiz || activeQuiz.submitted) return;
+
+    /* MCQ */
+    const opt = e.target.closest('.opt');
+    if(opt && !opt.classList.contains('locked')){
+      const key = opt.dataset.key;
+      const i = +opt.dataset.i;
+      activeQuiz.answers[key] = i;
+      opt.closest('.q-card').querySelectorAll('.opt').forEach(o=>o.classList.remove('selected'));
+      opt.classList.add('selected');
+      updateProgress();
+      return;
+    }
+
+    /* True/False */
+    const tfBtn = e.target.closest('.tf-btn');
+    if(tfBtn && !tfBtn.classList.contains('locked')){
+      const key = tfBtn.dataset.key;
+      const si = +tfBtn.dataset.si;
+      const val = tfBtn.dataset.v === 'true';
+      if(!activeQuiz.answers[key]) activeQuiz.answers[key] = [null,null,null,null];
+      activeQuiz.answers[key][si] = val;
+      const row = tfBtn.closest('.tf-row');
+      row.querySelectorAll('.tf-btn').forEach(b=>b.classList.remove('on-true','on-false'));
+      tfBtn.classList.add(val ? 'on-true' : 'on-false');
+      updateProgress();
+    }
+  });
+
+  area.addEventListener('input', e=>{
+    if(!activeQuiz || activeQuiz.submitted) return;
+    const inp = e.target.closest('.short-input');
+    if(inp){
+      activeQuiz.answers[inp.dataset.key] = inp.value;
+      updateProgress();
+    }
+  });
+}
+
+/* ---------- Tiến độ ---------- */
+function isAnswered(item){
+  const a = activeQuiz.answers[item.key];
+  if(item.ref.type === 'mcq') return a !== undefined && a !== null;
+  if(item.ref.type === 'tf') return Array.isArray(a) && a.filter(v=>v!==null&&v!==undefined).length === item.ref.statements.length;
+  if(item.ref.type === 'short') return typeof a === 'string' && a.trim() !== '';
+  return false;
+}
+function updateProgress(){
+  if(!activeQuiz) return;
+  const total = activeQuiz.flat.length;
+  const done = activeQuiz.flat.filter(isAnswered).length;
+  const txt = document.getElementById('progTxt');
+  const fill = document.getElementById('progFill');
+  if(txt) txt.textContent = `${done}/${total} câu`;
+  if(fill) fill.style.width = total ? (done/total*100) + '%' : '0%';
+}
+
+/* ---------- Nộp bài ---------- */
+document.addEventListener('click', e=>{
+  if(e.target.id === 'btnSubmit') submitQuiz(false);
+  if(e.target.id === 'btnCancel'){
+    if(confirm('Thoát khỏi bài làm? Kết quả sẽ không được lưu.')){
+      exitQuiz();
+    }
+  }
+});
+
+function exitQuiz(){
+  clearInterval(activeQuiz?.timerId);
+  activeQuiz = null;
+  document.getElementById('quizArea').style.display = 'none';
+  document.getElementById('quizArea').innerHTML = '';
+  document.getElementById('quizArea')._bound = false;
+  document.getElementById('modeSelect').style.display = 'block';
+  window.scrollTo({top:200, behavior:'smooth'});
+}
+
+function submitQuiz(auto){
+  if(!activeQuiz || activeQuiz.submitted) return;
+  const total = activeQuiz.flat.length;
+  const done = activeQuiz.flat.filter(isAnswered).length;
+  if(!auto && done < total){
+    if(!confirm(`Em còn ${total-done} câu chưa trả lời. Vẫn nộp bài?`)) return;
+  }
+  activeQuiz.submitted = true;
+  clearInterval(activeQuiz.timerId);
+
+  const spent = Math.min(activeQuiz.def.timeLimit, Math.round((Date.now()-activeQuiz.startTime)/1000));
+
+  /* Tính điểm */
+  let earned = 0, maxTotal = 0, nCorrect = 0, nWrong = 0, nBlank = 0;
+  const details = [];
+
+  activeQuiz.flat.forEach(item=>{
+    const q = item.ref;
+    const ua = activeQuiz.answers[item.key];
+    maxTotal += item.points;
+    let e = 0, status = 'blank';
+
+    if(q.type === 'mcq'){
+      if(ua === undefined || ua === null){ status = 'blank'; nBlank++; }
+      else if(ua === q.ans){ e = item.points; status = 'correct'; nCorrect++; }
+      else { status = 'wrong'; nWrong++; }
+    }
+    else if(q.type === 'tf'){
+      if(!Array.isArray(ua)){ status = 'blank'; nBlank++; }
+      else{
+        let c = 0;
+        q.statements.forEach((s,i)=>{ if(ua[i] === s.a) c++; });
+        if(item.tfPartial){
+          const map = [0, item.points*0.25, item.points*0.5, item.points*0.75, item.points];
+          e = map[c];
+        } else {
+          e = (c === q.statements.length) ? item.points : 0;
+        }
+        if(c === q.statements.length){ status = 'correct'; nCorrect++; }
+        else if(c === 0){ status = 'wrong'; nWrong++; }
+        else { status = 'partial'; nWrong++; }
+      }
+    }
+    else if(q.type === 'short'){
+      const raw = String(ua ?? '').trim().replace(',', '.');
+      if(raw === ''){ status = 'blank'; nBlank++; }
+      else{
+        const val = parseFloat(raw);
+        if(!isNaN(val) && Math.abs(val - q.ans) < 1e-6){ e = item.points; status = 'correct'; nCorrect++; }
+        else { status = 'wrong'; nWrong++; }
+      }
+    }
+
+    earned += e;
+    details.push({ item, status, earned:e, userAnswer: ua });
+  });
+
+  const pct = maxTotal ? earned/maxTotal*100 : 0;
+
+  /* Lưu thống kê */
+  saveAttempt({
+    mode: activeQuiz.def.id,
+    modeName: activeQuiz.def.title,
+    score: +earned.toFixed(2),
+    max: +maxTotal.toFixed(2),
+    pct: +pct.toFixed(1),
+    correct: nCorrect, wrong: nWrong, blank: nBlank,
+    total: total,
+    timeSpent: spent,
+    date: Date.now()
+  });
+
+  renderResult({earned, maxTotal, pct, nCorrect, nWrong, nBlank, spent, details});
+}
+
+/* ---------- Màn hình kết quả ---------- */
+function renderResult(r){
+  const area = document.getElementById('quizArea');
+  const score10 = r.maxTotal > 0 ? (r.earned / r.maxTotal * 10) : 0;
+
+  let rank, rankMsg, rankColor;
+  if(score10 >= 9){ rank='Xuất sắc'; rankMsg='Kiến thức rất vững vàng! Em đã sẵn sàng cho kì thi.'; }
+  else if(score10 >= 8){ rank='Giỏi'; rankMsg='Kết quả tốt! Hãy chú ý thêm các câu vận dụng cao.'; }
+  else if(score10 >= 6.5){ rank='Khá'; rankMsg='Nắm được kiến thức cơ bản. Cần luyện thêm dạng vận dụng.'; }
+  else if(score10 >= 5){ rank='Trung bình'; rankMsg='Hãy xem lại phần lý thuyết và các câu sai bên dưới nhé.'; }
+  else { rank='Cần cố gắng'; rankMsg='Đừng nản lòng! Hãy ôn lại lý thuyết rồi làm lại từ đầu.'; }
+
+  let html = `
+  <div class="result-hero">
+    <div class="score-ring" style="--pct:${r.pct.toFixed(1)}%">
+      <div class="inner">
+        <div class="score-val">${score10.toFixed(1)}</div>
+        <div class="score-max">/ 10 điểm</div>
+      </div>
+    </div>
+    <h2>${rank}</h2>
+    <p class="rsub">${rankMsg}</p>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-box"><div class="v b">${r.earned.toFixed(2)}</div><div class="k">Điểm đạt được</div></div>
+    <div class="stat-box"><div class="v g">${r.nCorrect}</div><div class="k">Câu đúng</div></div>
+    <div class="stat-box"><div class="v r">${r.nWrong}</div><div class="k">Câu sai / đúng một phần</div></div>
+    <div class="stat-box"><div class="v a">${r.nBlank}</div><div class="k">Câu bỏ trống</div></div>
+    <div class="stat-box"><div class="v b">${fmtTime(r.spent)}</div><div class="k">Thời gian làm</div></div>
+  </div>
+
+  <h3 class="sec-title" style="font-size:1.1rem;margin-bottom:10px">🔍 Xem lại chi tiết bài làm</h3>
+  <p class="sec-sub">Đáp án đúng được tô <b style="color:var(--green)">xanh</b>, lựa chọn sai của em được tô <b style="color:var(--red)">đỏ</b>.</p>
+  `;
+
+  /* Render lại từng câu ở chế độ review */
+  let globalIdx = 0;
+  const secs = activeQuiz.def.sections;
+  secs.forEach((sec, si)=>{
+    html += `<div class="section-head">${esc(sec.name)}</div>`;
+    sec.questions.forEach((q, qi)=>{
+      globalIdx++;
+      const key = `q_${si}_${qi}`;
+      const det = r.details.find(d=>d.item.key === key);
+      const status = det ? det.status : 'blank';
+      const cls = status==='correct'?'correct': status==='partial'?'partial': status==='wrong'?'wrong':'';
+      const ua = det ? det.userAnswer : undefined;
+
+      let body = '';
+
+      if(q.type === 'mcq'){
+        body = `<div class="options">` + q.options.map((opt,i)=>{
+          let oc = 'opt locked';
+          if(i === q.ans) oc += ' correct-ans';
+          else if(i === ua) oc += ' wrong-ans';
+          return `<button class="${oc}"><span class="lab">${'ABCD'[i]}</span><span>${opt}</span></button>`;
+        }).join('') + `</div>`;
+      }
+      else if(q.type === 'tf'){
+        body = `<div class="tf-list">` + q.statements.map((s,i)=>{
+          const correctCls = s.a ? 'on-true rev-correct' : 'on-false rev-correct';
+          const userVal = Array.isArray(ua) ? ua[i] : undefined;
+          const userCls = userVal===undefined ? '' : (userVal ? 'on-true' : 'on-false');
+          const userWrong = (userVal !== undefined) && (userVal !== s.a);
+          return `<div class="tf-row">
+            <div class="tf-text"><b>${'abcd'[i]})</b> ${s.t}</div>
+            <div class="tf-btns">
+              <button class="tf-btn locked ${s.a?'on-true':'on-false'} rev-correct">${s.a?'Đúng':'Sai'}</button>
+              ${userVal!==undefined ? `<button class="tf-btn locked ${userCls} ${userWrong?'rev-wrong':''}">Em chọn: ${userVal?'Đúng':'Sai'}</button>` : `<button class="tf-btn locked" style="opacity:.5">Bỏ trống</button>`}
+            </div>
+          </div>`;
+        }).join('') + `</div>`;
+      }
+      else if(q.type === 'short'){
+        const raw = String(ua ?? '').trim();
+        const ok = det && det.status === 'correct';
+        body = `<div class="short-wrap">
+          <input class="short-input ${det?(ok?'ok':'no'):''}" type="text" value="${esc(raw)}" disabled>
+          <span style="font-size:.9rem">
+            ${raw==='' ? '<span style="color:var(--muted)">— Bỏ trống —</span>' : ''}
+            <b style="color:var(--green)">Đáp án đúng: ${q.ans}</b>
+          </span>
+        </div>`;
+      }
+
+      html += `<div class="q-card ${cls}" id="card-${key}">
+        <div class="q-head">
+          <span class="q-num">Câu ${globalIdx}</span>
+          <span class="level lv-${q.level}">${LEVELS[q.level]}</span>
+          <span class="q-res ${status==='correct'?'ok':status==='partial'?'pa':'no'}">
+            ${status==='correct'?'✓ Đúng':status==='partial'?'◐ Đúng một phần':status==='blank'?'— Bỏ trống':'✗ Sai'}
+            &nbsp;·&nbsp;${(det?det.earned:0).toFixed(2)}đ
+          </span>
+        </div>
+        <div class="q-text">${q.q}</div>
+        ${body}
+        ${q.explain ? `<div class="explain"><b>Hướng dẫn:</b> ${q.explain}</div>` : ''}
+      </div>`;
+    });
+  });
+
+  html += `<div class="actions">
+    <button class="btn btn-ghost" id="btnRedo">🔄 Làm lại</button>
+    <button class="btn btn-gray" id="btnBackHome">← Chọn bài khác</button>
+    <button class="btn btn-primary" id="btnGoStats">📊 Xem thống kê</button>
+  </div>`;
+
+  area.innerHTML = html;
+  typeset(area);
+  window.scrollTo({top:150, behavior:'smooth'});
+
+  document.getElementById('btnRedo').onclick = ()=>{
+    const mode = activeQuiz.def.id;
+    clearInterval(activeQuiz.timerId);
+    activeQuiz = null;
+    document.getElementById('quizArea')._bound = false;
+    document.getElementById('quizArea').innerHTML = '';
+    startQuiz(mode);
+  };
+  document.getElementById('btnBackHome').onclick = exitQuiz;
+  document.getElementById('btnGoStats').onclick = ()=>{
+    exitQuiz();
+    switchTab('stats');
+  };
+}
+
+/* =====================================================================
+   5. THỐNG KÊ
+   ===================================================================== */
+function renderStats(){
+  const area = document.getElementById('statsArea');
+  const data = getStats();
+  const attempts = data.attempts;
+
+  if(!attempts.length){
+    area.innerHTML = `<div class="empty">
+      <div class="big">📭</div>
+      <h3 style="margin-bottom:8px">Chưa có dữ liệu làm bài</h3>
+      <p>Hãy bắt đầu luyện tập ở tab <b>Luyện tập</b> để theo dõi tiến độ của mình nhé!</p>
+    </div>`;
+    return;
+  }
+
+  const totalAttempts = attempts.length;
+  const avgPct = attempts.reduce((s,a)=>s+a.pct,0) / totalAttempts;
+  const bestPct = Math.max(...attempts.map(a=>a.pct));
+  const totalTime = attempts.reduce((s,a)=>s+a.timeSpent,0);
+
+  const byMode = { theoryQuiz:[], practice:[], exam:[] };
+  attempts.forEach(a=>{ if(byMode[a.mode]) byMode[a.mode].push(a); });
+  const modeLabel = { theoryQuiz:'Củng cố lý thuyết', practice:'Luyện tập theo dạng', exam:'Đề tổng hợp' };
+
+  let html = `
+  <div class="stat-grid">
+    <div class="stat-box"><div class="v b">${totalAttempts}</div><div class="k">Lần làm bài</div></div>
+    <div class="stat-box"><div class="v ${avgPct>=65?'g':avgPct>=50?'a':'r'}">${avgPct.toFixed(1)}%</div><div class="k">Điểm trung bình</div></div>
+    <div class="stat-box"><div class="v g">${bestPct.toFixed(1)}%</div><div class="k">Kết quả cao nhất</div></div>
+    <div class="stat-box"><div class="v b">${fmtTime(totalTime)}</div><div class="k">Tổng thời gian</div></div>
+  </div>
+
+  <h3 class="sec-title" style="font-size:1.08rem;margin-bottom:12px">📌 Tổng hợp theo hình thức</h3>
+  <div class="stat-grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
+  `;
+
+  ['theoryQuiz','practice','exam'].forEach(m=>{
+    const arr = byMode[m];
+    if(!arr.length){
+      html += `<div class="stat-box" style="text-align:left">
+        <div style="font-weight:800;font-size:.92rem;margin-bottom:6px">${modeLabel[m]}</div>
+        <div style="color:var(--muted);font-size:.83rem">Chưa làm lần nào</div>
+      </div>`;
+    } else {
+      const avg = arr.reduce((s,a)=>s+a.pct,0)/arr.length;
+      const best = Math.max(...arr.map(a=>a.pct));
+      html += `<div class="stat-box" style="text-align:left">
+        <div style="font-weight:800;font-size:.92rem;margin-bottom:10px">${modeLabel[m]}</div>
+        <div style="font-size:.83rem;color:var(--muted);margin-bottom:4px">Số lần: <b style="color:var(--text)">${arr.length}</b></div>
+        <div style="font-size:.83rem;color:var(--muted);margin-bottom:4px">TB: <b style="color:var(--primary)">${avg.toFixed(1)}%</b></div>
+        <div style="font-size:.83rem;color:var(--muted)">Cao nhất: <b style="color:var(--green)">${best.toFixed(1)}%</b></div>
+      </div>`;
+    }
+  });
+
+  html += `</div>
+
+  <h3 class="sec-title" style="font-size:1.08rem;margin:26px 0 12px">🕘 Lịch sử làm bài</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr>
+        <th>#</th><th>Thời gian</th><th>Hình thức</th><th>Điểm</th><th>%</th>
+        <th>Đúng</th><th>Sai</th><th>Bỏ trống</th><th>Thời gian làm</th><th>Tiến độ</th>
+      </tr></thead>
+      <tbody>`;
+
+  attempts.forEach((a, i)=>{
+    const cls = a.mode==='theoryQuiz'?'bm-theory':a.mode==='practice'?'bm-practice':'bm-exam';
+    const color = a.pct>=80?'var(--green)':a.pct>=50?'var(--amber)':'var(--red)';
+    html += `<tr>
+      <td style="color:var(--muted);font-weight:700">${totalAttempts - i}</td>
+      <td style="white-space:nowrap;font-size:.82rem;color:var(--muted)">${fmtDate(a.date)}</td>
+      <td><span class="badge-mode ${cls}">${esc(a.modeName)}</span></td>
+      <td><b>${a.score}</b> / ${a.max}</td>
+      <td><b style="color:${color}">${a.pct}%</b></td>
+      <td style="color:var(--green);font-weight:700">${a.correct}</td>
+      <td style="color:var(--red);font-weight:700">${a.wrong}</td>
+      <td style="color:var(--muted);font-weight:700">${a.blank}</td>
+      <td style="font-variant-numeric:tabular-nums">${fmtTime(a.timeSpent)}</td>
+      <td style="min-width:110px">
+        <div class="bar-mini"><div style="width:${a.pct}%;background:linear-gradient(90deg,${color},${color})"></div></div>
+      </td>
+    </tr>`;
+  });
+
+  html += `</tbody></table></div>
+  <div class="actions" style="justify-content:flex-end;margin-top:20px">
+    <button class="btn btn-danger" id="btnClearStats">🗑 Xoá toàn bộ dữ liệu</button>
+  </div>`;
+
+  area.innerHTML = html;
+
+  document.getElementById('btnClearStats').onclick = ()=>{
+    if(confirm('Xoá toàn bộ lịch sử làm bài? Hành động này không thể hoàn tác.')){
+      clearStats();
+      toast('Đã xoá toàn bộ dữ liệu thống kê.');
+      renderStats();
+    }
+  };
+}
+
+/* =====================================================================
+   6. KHỞI TẠO
+   ===================================================================== */
+window.addEventListener('load', ()=>{
+  typeset(document.querySelector('#panel-theory'));
+  setTimeout(()=>typeset(document.body), 900);
+});
+</script>
+</body>
+</html>
